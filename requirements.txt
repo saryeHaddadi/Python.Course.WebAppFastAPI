@@ -7,6 +7,7 @@ uvicorn==0.15.0
 fastapi-chameleon==0.1.12
 aiofiles
 python-multipart
+sqlalchemy
 
 # dependency_injector 
 
