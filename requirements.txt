@@ -6,5 +6,7 @@ fastapi==0.70.0
 uvicorn==0.15.0
 fastapi-chameleon==0.1.12
 aiofiles
-dependency_injector 
+python-multipart
+
+# dependency_injector 
 
