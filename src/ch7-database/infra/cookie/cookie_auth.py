@@ -4,6 +4,7 @@ from starlette.responses import Response
 from starlette.requests import Request
 from infra.cookie.num_convert import try_int
 
+
 AUTH_KEY = 'pypi_account'
 
 def set_auth(response: Response, user_id: int):

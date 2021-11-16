@@ -3,7 +3,7 @@ from starlette.requests import Request
 from starlette.responses import HTMLResponse
 from fastapi_chameleon import template
 from web.viewmodels.home.IndexViewModel import IndexViewModel
-from web.viewmodels.shared.BaseViewModel import BaseViewModel
+from web.viewmodels.base.BaseViewModel import BaseViewModel
 
 router = fastapi.APIRouter()
 

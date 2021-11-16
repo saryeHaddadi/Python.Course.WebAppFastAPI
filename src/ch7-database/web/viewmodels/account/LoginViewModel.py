@@ -1,5 +1,5 @@
 from starlette.requests import Request
-from web.viewmodels.shared.BaseViewModel import BaseViewModel
+from web.viewmodels.base.BaseViewModel import BaseViewModel
 
 
 class LoginViewModel(BaseViewModel):

@@ -18,13 +18,15 @@ def global_init(db_file: str):
     if __factory:
         return
 
-    if not db_file or not db_file.strip():
+    db_file = str(db_file).strip()
+
+    if not db_file:
         raise Exception("You must specify a db file.")
 
     folder = Path(db_file).parent
     folder.mkdir(parents=True, exist_ok=True)
 
-    conn_str = 'sqlite:///' + db_file.strip()
+    conn_str = 'sqlite:///' + db_file
     print("Connecting to DB with {}".format(conn_str))
 
     # Adding check_same_thread = False after the recording. This can be an issue about
@@ -40,8 +42,6 @@ def global_init(db_file: str):
 
 
 def create_session() -> Session:
-    global __factory
-
     if not __factory:
         raise Exception("You must call global_init() before using this method.")
 

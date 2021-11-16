@@ -1,7 +1,7 @@
 from starlette.requests import Request
-from web.viewmodels.shared.BaseViewModel import BaseViewModel
+from web.viewmodels.base.BaseViewModel import BaseViewModel
 from app.services.PackageService import PackageService
-
+from app.models.Release import Release
 
 class DetailModelBase(BaseViewModel):
 
@@ -11,12 +11,14 @@ class DetailModelBase(BaseViewModel):
         self.package_name = package_name
         self.package = PackageService.get_package_by_id(package_name)
         self.latest_release = PackageService.get_latest_release_for_package(package_name)
-        self.latest_version = "0.0.0"
+        self.latest_version : Release = PackageService.get_latest_release_for_package(package_name)
         self.is_latest = True
         self.maintainers = []
 
         if not self.package or not self.latest_release:
             return
 
-        self.latest_version = self.latest_release.version
-        self.maintainers = self.package.maintainers
+        r = self.latest_version
+        self.latest_version = f'{r.major_ver}.{r.minor_ver}.{r.build_ver}'
+        self.maintainers = []
+        

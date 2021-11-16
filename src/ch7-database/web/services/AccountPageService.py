@@ -35,6 +35,7 @@ async def register_post(request: Request):
     
     account = UserService.create_account(vm.name, vm.email, vm.password)
     
+    # Login the user
     response = fastapi.responses.RedirectResponse(url='/account', status_code=status.HTTP_302_FOUND)
     cookie_auth.set_auth(response, account.id)
     

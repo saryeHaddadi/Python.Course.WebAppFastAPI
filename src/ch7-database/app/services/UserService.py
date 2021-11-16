@@ -1,21 +1,56 @@
 # TODO: reference to app.core.repository
 from typing import Optional
 from app.models.User import User
-
+from infra.data import db_session
 
 class UserService:
     
     def get_user_count():
-        return 73_874
+        session = db_session.create_session()
+        try:
+            return session.query(User).count()
+        finally:
+            session.close()
 
     def create_account(name: str, email: str, password: str) -> User:
-        return User(name, email, 'abc')
+        session = db_session.create_session()
+        try:
+            user = User()
+            user.email = email
+            user.name = name
+            # TODO: set proper password
+            user.hash_password = "TBD"
+            
+            session.add(user)
+            session.commit()
+            return user
+        finally:
+            session.close()
 
     def login_user(email: str, password: str) -> Optional[User]:
-        if password == 'abc':
-            return User("test user", email, 'abc')
+        session = db_session.create_session()
+        try:
+            user = UserService.get_user_by_email(email)
+            if not user:
+                return user
+            # TODO: revify password
+            if False:
+                return None
+            return user
+        
+        finally:
+            session.close()
 
-        return None
+    def get_user_by_id(user_id: str) -> Optional[User]:
+        session = db_session.create_session()
+        try:
+            return session.query(User).filter(User.id == user_id).first()
+        finally:
+            session.close()
 
-
-
+    def get_user_by_email(email: str) -> Optional[User]:
+        session = db_session.create_session()
+        try:
+            return session.query(User).filter(User.email == email).first()
+        finally:
+            session.close()

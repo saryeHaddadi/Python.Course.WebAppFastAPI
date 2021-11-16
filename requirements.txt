@@ -8,6 +8,8 @@ fastapi-chameleon==0.1.12
 aiofiles
 python-multipart
 sqlalchemy
-
+progressbar2
+python-dateutil
+passlib
 # dependency_injector 
 

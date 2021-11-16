@@ -1,7 +1,8 @@
 from typing import Optional
 from starlette.requests import Request
-from web.viewmodels.shared.BaseViewModel import BaseViewModel
-from app.models.User import User
+from web.viewmodels.base.BaseViewModel import BaseViewModel
+from app.services.UserService import UserService
+
 
 class RegisterViewModel(BaseViewModel):
 
@@ -20,12 +21,12 @@ class RegisterViewModel(BaseViewModel):
 
         if self.validate_field(self.name):
             self.error = 'Your name is required'
-            
-        if self.validate_field(self.password):
-            self.error = 'Your password is required'
-            
-        if self.validate_field(self.email):
+        elif self.validate_field(self.password) or len(self.password) < 5:
+            self.error = 'Your password is required and must be at 5 characters.'
+        elif self.validate_field(self.email):
             self.error = 'Your email is required'
+        elif UserService.get_user_by_email(self.email):
+            self.error = "That email is already taken. Log in instead?"
 
     def validate_field(self, field: str):
         return (not self.name or not self.name.strip())
