@@ -27,3 +27,5 @@ class Release(BaseModel):
     @property
     def version_text(self):
         return '{}.{}.{}'.format(self.major_ver, self.minor_ver, self.build_ver)
+
+

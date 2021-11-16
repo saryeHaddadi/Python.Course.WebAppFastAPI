@@ -1,60 +1,52 @@
 from typing import List, Optional
-import datetime
-
 import sqlalchemy.orm
+from sqlalchemy.future import select
+from sqlalchemy import func
 from app.models.Package import Package
 from app.models.Release import Release
 from infra.data import db_session
 
+
 class PackageService:
     
-    def get_package_count() -> int:
-        session = db_session.create_session()
-        try:
-            return session.query(Package).count()
-        finally:
-            session.close()
+    async def get_package_count() -> int:
+        async with db_session.create_async_session() as session:
+            query = select(func.count(Package.id))
+            result = await session.execute(query)
+            return result.scalar_one_or_none()
 
-    def get_release_count() -> int:
-        session = db_session.create_session()
-        try:
-            return session.query(Release).count()
-        finally:
-            session.close()
-        
-
-    def get_latest_packages(limit: int = 5) -> List[Package]:
-        session = db_session.create_session()
-        try:
-            releases = session.query(Release)\
+    async def get_release_count() -> int:
+        async with db_session.create_async_session() as session:
+            query = select(func.count(Release.id))
+            result = await session.execute(query)
+            return result.scalar_one_or_none()
+       
+    async def get_latest_packages(limit: int = 5) -> List[Package]:
+        async with db_session.create_async_session() as session:
+            query = select(Release)\
                 .options(sqlalchemy.orm.joinedload(Release.package))\
                 .order_by(Release.created_date.desc())\
-                .limit(limit).all()
-        finally:
-            session.close()
-        
+                .limit(limit)
+            releases = await session.execute(query)
+
         # set comprehension to get distinct
-        return {r.package for r in releases}
+        return {r.package for r in releases.scalars()}
 
 
-    def get_package_by_id(package_name: str) -> Optional[Package]:
-        session = db_session.create_session()
-        try:
-            package = session.query(Package).filter(Package.id == package_name).first()
-        finally:
-            session.close()
-        return package
-
-    def get_latest_release_for_package(package_name: str) -> Optional[Release]:
-        session = db_session.create_session()
-        try:
-            release = session.query(Release)\
+    async def get_package_by_id(package_name: str) -> Optional[Package]:
+        async with db_session.create_async_session() as session:
+            query = select(Package).filter(Package.id == package_name)
+            result = await session.execute(query)
+            return result.scalar_one_or_none()
+        
+    async def get_latest_release_for_package(package_name: str) -> Optional[Release]:
+        async with db_session.create_async_session() as session:
+            query = select(Release)\
                 .filter(Release.package_id == package_name)\
-                .order_by(Release.created_date.desc())\
-                .first()
-        finally:
-            session.close()
-        return release
+                .order_by(Release.created_date.desc())
+            result = await session.execute(query)
+            return result.scalars().first()
+
 
         
 

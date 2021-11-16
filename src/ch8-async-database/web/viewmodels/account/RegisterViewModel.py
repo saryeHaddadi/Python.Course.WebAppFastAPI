@@ -25,14 +25,10 @@ class RegisterViewModel(BaseViewModel):
             self.error = 'Your password is required and must be at 5 characters.'
         elif self.validate_field(self.email):
             self.error = 'Your email is required'
-        elif UserService.get_user_by_email(self.email):
+        elif await UserService.get_user_by_email(self.email):
             self.error = "That email is already taken. Log in instead?"
 
     def validate_field(self, field: str):
         return (not self.name or not self.name.strip())
         
-
-
-
-
 
